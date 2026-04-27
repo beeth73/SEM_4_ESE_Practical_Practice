@@ -1,0 +1,174 @@
+================================================================================
+                         DSA PRACTICAL EXAM CHEATSHEET
+             Sorting | Greedy | Graphs | Backtracking | DP
+================================================================================
+
+--------------------------------------------------------------------------------
+0. QUICK COMPLEXITY & LOGIC REFERENCE
+--------------------------------------------------------------------------------
+Algorithm           Time (Avg)    Time (Worst)  Space      Strategy
+--------------------------------------------------------------------------------
+Insertion Sort      O(n^2)        O(n^2)        O(1)       Incremental
+Merge Sort          O(n log n)    O(n log n)    O(n)       Divide & Conquer
+Quick Sort          O(n log n)    O(n^2)        O(log n)   Divide & Conquer
+Fractional Knapsack O(n log n)    O(n log n)    O(1)       Greedy
+Dijkstra            O(V^2)        O(V^2)        O(V)       Greedy
+Floyd-Warshall      O(V^3)        O(V^3)        O(V^2)     Dynamic Programming
+LCS                 O(m*n)        O(m*n)        O(m*n)     Dynamic Programming
+N-Queens            -             O(n!)         O(n)       Backtracking
+Subset Sum          -             O(2^n)        O(n)       Backtracking
+
+--------------------------------------------------------------------------------
+1. INSERTION SORT (The Card Player's Algorithm)
+--------------------------------------------------------------------------------
+Logic:
+  Picks one element (key) and compares it with the sorted elements to its left.
+  Shifts all elements larger than the key to the right to create a "hole."
+
+Key Implementation:
+  for (i = 1; i < n; i++) {
+      key = arr[i];
+      j = i - 1;
+      while (j >= 0 && arr[j] > key) {
+          arr[j + 1] = arr[j]; // Shift Right
+          j--;
+      }
+      arr[j + 1] = key; // Drop Key into Hole
+  }
+
+Viva Questions:
+- Why start j at i-1? Because the sorted part ends right before the new key.
+- What if numbers are 2-digits? Comparison (arr[j] > key) works on full integer
+  values, not individual digits.
+- Why check scanf != 1? To ensure the user typed a number and not characters.
+
+--------------------------------------------------------------------------------
+2. MERGE SORT (Divide, Conquer, and Combine)
+--------------------------------------------------------------------------------
+Logic:
+  Recursively splits the array in half until 1-element pieces remain. 
+  The 'merge' function then zips them back together in order.
+
+Merge Logic (The Sorting Part):
+  - Use two temp arrays: L[] and R[].
+  - Pointer i walks through L, j walks through R.
+  - Compare L[i] and R[j]. Write the smaller one back to the original array[k].
+  - IMPORTANT: After the loop, copy "leftovers" from L or R.
+
+Critical Code Fragment:
+  while (i < n1 && j < n2) {
+      if (L[i] <= R[j]) { arr[k] = L[i]; i++; }
+      else { arr[k] = R[j]; j++; }
+      k++;
+  }
+
+Note: When copying to L/R, use `L[i] = arr[l + i]`. The 'l' is the offset.
+
+--------------------------------------------------------------------------------
+3. QUICK SORT (Partitioning)
+--------------------------------------------------------------------------------
+Logic:
+  Pick a pivot (usually the last element). Partition the array so all elements 
+  < pivot are on the left and elements > pivot are on the right.
+
+The "Wall" (Pointer i):
+  - i starts at low - 1. It represents the "boundary" of small elements.
+  - As j scans, if arr[j] <= pivot, move the wall (i++) and swap.
+  - At the very end, swap pivot with i+1.
+
+Viva Questions:
+- Is it in-place? Yes, it doesn't need extra arrays like Merge Sort.
+- Worst Case? O(n^2) when the array is already sorted and we pick the end pivot.
+
+--------------------------------------------------------------------------------
+4. FRACTIONAL KNAPSACK (Greedy)
+--------------------------------------------------------------------------------
+Logic:
+  Maximize profit under weight limit. You can take portions of items.
+  Greedy Choice: Always take the item with the highest Profit/Weight ratio.
+
+Steps:
+  1. Calculate Ratio = Profit / Weight for all items.
+  2. Sort items by Ratio in descending order.
+  3. Loop through items: If item fits, take all. If not, take (Remaining/Weight).
+
+Formula:
+  fraction_profit = item.profit * (remaining_capacity / item.weight);
+
+--------------------------------------------------------------------------------
+5. DIJKSTRA'S ALGORITHM (Single Source Shortest Path)
+--------------------------------------------------------------------------------
+Logic:
+  Greedily find the shortest path from a source node to all others.
+
+Relaxation Condition (4 checks):
+  1. Neighbor is not yet 'finalized'.
+  2. Edge exists (graph[u][v] != 0).
+  3. Source-to-Current distance is not INF.
+  4. (Dist[u] + weight) < current Dist[v].
+
+Input Guide:
+  Matrix is symmetric for undirected graphs. 0 on diagonal. 0 for no edge.
+
+--------------------------------------------------------------------------------
+6. FLOYD-WARSHALL (All-Pairs Shortest Path)
+--------------------------------------------------------------------------------
+Logic:
+  Find shortest path between EVERY pair (i, j) by checking if an intermediate 
+  vertex (k) provides a shortcut.
+
+The Triple Loop:
+  for k from 0 to V:      // Intermediate stop
+    for i from 0 to V:    // Source city
+      for j from 0 to V:  // Destination city
+        if (dist[i][k] + dist[k][j] < dist[i][j])
+           dist[i][j] = dist[i][k] + dist[k][j];
+
+--------------------------------------------------------------------------------
+7. LONGEST COMMON SUBSEQUENCE (LCS)
+--------------------------------------------------------------------------------
+Logic:
+  Dynamic Programming. Build a table (L[m+1][n+1]).
+  - If chars match: 1 + Diagonal-Up cell.
+  - If no match: Max of (Top cell, Left cell).
+
+Backtracking for string:
+  - Start at bottom-right cell L[m][n].
+  - If S1[i-1] == S2[j-1]: Save char, move i--, j-- (Diagonal).
+  - Else: Move to the neighbor with the larger value (Up or Left).
+
+--------------------------------------------------------------------------------
+8. N-QUEENS (Backtracking)
+--------------------------------------------------------------------------------
+Logic:
+  Place queens row by row. If a row has no safe column, backtrack (go up).
+
+Safe Checks:
+  1. Column check: board[i] == current_col
+  2. Diagonal check: abs(board[i] - col) == abs(i - row) 
+     (If horizontal distance == vertical distance, they attack diagonally).
+
+--------------------------------------------------------------------------------
+9. SUBSET SUM (Backtracking)
+--------------------------------------------------------------------------------
+Logic:
+  Decision tree: for each number, either INCLUDE or EXCLUDE.
+
+Pruning Rules (Promising Conditions):
+  - Include only if: currentSum + element <= target
+  - Exclude only if: currentSum + remaining_available_weight >= target
+
+Variables:
+  - wsf (Weight So Far): Current sum.
+  - tpl (Total Possible Left): Sum of numbers not yet decided.
+
+--------------------------------------------------------------------------------
+FINAL CHECKLIST / MISTAKES TO AVOID
+--------------------------------------------------------------------------------
+- [ ] Merge Sort: Don't forget to copy the "leftover" elements after the loop.
+- [ ] Quick Sort: The partition loop (j) stops at `high - 1`.
+- [ ] Dijkstra: Use a large value like 99999 for INF.
+- [ ] Floyd-Warshall: k must be the OUTERMOST loop.
+- [ ] Backtracking: Ensure you return/base case correctly to trigger recursion.
+- [ ] LCS: The table is size [m+1][n+1] to accommodate the zero-row/column.
+================================================================================
