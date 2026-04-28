@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void main() {
+int main() {  // Changed from void to int
     int n, head, total_seek = 0;
     printf("--- FCFS Disk Scheduling ---\n");
     printf("Enter no. of requests: ");
-    scanf("%d", &n);
+    if (scanf("%d", &n) != 1) return 1;
+    
     int req[n];
     printf("Enter requests: ");
     for(int i=0; i<n; i++) scanf("%d", &req[i]);
+    
     printf("Enter initial head position: ");
     scanf("%d", &head);
 
@@ -19,4 +21,6 @@ void main() {
         printf(" -> %d", head);
     }
     printf("\nTotal Seek Time: %d\n", total_seek);
+    
+    return 0; // Added return statement
 }
